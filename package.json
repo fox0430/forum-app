@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node server.js",
     "test": "jest"
   },
   "author": "Shuu.N (fox0430)",
