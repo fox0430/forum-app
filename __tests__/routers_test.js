@@ -15,14 +15,11 @@ const getToken = (user) => {
   return token;
 }
 
-let token = '';
-
 beforeAll(async () => {
   const url = `mongodb://127.0.0.1/forum`;
   await mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
 
-  await UserModel.create({name: 'testUser', password: 'test'});
-  token = getToken('testUser');
+  await UserModel.create({Name: 'testUser', Password: 'test'});
 })
 
 describe('GET /get', () => {
@@ -31,7 +28,7 @@ describe('GET /get', () => {
       .get("/get")
       .then(res => {
         expect(res.statusCode).toBe(200);
-        assert(res.body.value == 'get');
+        assert(res.body.value === 'get');
         done();
       });
   });
@@ -39,6 +36,8 @@ describe('GET /get', () => {
 
 describe('POST /post', () => {
   it('retuen 200', (done) => {
+    const token = getToken('testUser');
+
     request(app)
       .post('/post')
       .set({authorization: 'Bearer ' + token, Accept: 'application/json'})
@@ -57,7 +56,26 @@ describe('POST /create', () => {
 
     request(app)
       .post('/create')
-      .send({name: user, password: 'pass'})
+      .send({UserName: user, Password: 'pass'})
+      .set('Accept', 'application/json')
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        assert(res.body.Token);
+        done();
+      });
+  });
+});
+
+describe('POST /login ', () => {
+  it('retuen 200 and token', async (done) => {
+    // Generate uniq user name
+    const user = mongoose.Types.ObjectId();
+
+    await UserModel.create({Name: user, Password: 'pass'});
+
+    request(app)
+      .post('/login')
+      .send({UserName: user, Password: 'pass'})
       .set('Accept', 'application/json')
       .then(res => {
         expect(res.statusCode).toBe(200);

@@ -3,22 +3,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserModelSchema = new Schema({
-  name: {
+  Name: {
     type: String
   },
-  password:{
+  Password:{
     type: String
   }
 });
 
 const ContributionModelSchema = new Schema({
-  userID: {
+  UserID: {
     type: String 
   },
-  message:{
+  Message:{
     type: String 
   },
-  timestamp: {
+  Timestamp: {
     type: Date,
     default: new Date
   }

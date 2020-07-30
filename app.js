@@ -51,17 +51,19 @@ app.post('/post', async (req, res, next) => {
     req.headers.authorization.split(' ')[0] === 'Bearer') {
     token = req.headers.authorization.split(' ')[1];
   } else {
-    res.status(400).json('');
+    res.status(400).json(err);
     next();
   }
 
   const decoded = await verifyToken(token).catch(err => {
-    res.status(500).json('');
+    console.log(err);
+    res.status(500).json({Message: err});
     throw err;
   });
    
   const user = await UserModel.findOne({name: decoded.user}).catch(err => {
-    res.status(500).json('');
+    console.log(err);
+    res.status(500).json({Message: err});
     throw err;
   });
 
@@ -70,33 +72,37 @@ app.post('/post', async (req, res, next) => {
       userID: user._id,
       message: req.body.message,
     }).catch(err => {
-      res.status(500).json('');
+      console.log(err);
+      res.status(500).json({Message: err});
       throw err;
     });
 
-    res.status(200).json('');
+    res.status(200).json({});
   } else {
-    res.status(400).json('');
+    res.status(400).json({});
   }
 });
 
-app.post('/create', async (req, res) => {
-  const username = req.body.name;
-  const pass = req.body.password;
+app.post('/create', async (req, res, next) => {
+  const username = req.body.UserName;
+  const pass = req.body.Password;
 
   if (!username || !pass) {
-    res.status(400).json('');
+    res.status(400).json({Message: 'Error: Empty data'});
+    next();
   }
 
   const existsUser = await UserModel.count({name: username}).catch(err => {
-    res.status(500).json('');
+    console.log(err);
+    res.status(500).json({Message: err});
     throw err;
   });
 
   let newUser = {};
   if (!existsUser) {
-    newUser = await UserModel.create({name: username, password: pass}).catch(err => {
-      res.status(500).json('');
+    newUser = await UserModel.create({name: username, Password: pass}).catch(err => {
+      console.log(err);
+      res.status(500).json({Message: err});
       throw err;
     });
   }
@@ -105,7 +111,29 @@ app.post('/create', async (req, res) => {
     const token = getToken(newUser.name);
     res.status(200).json({Token: token});
   } else {
-    res.status(500).json('');
+    res.status(400).json({});
+  }
+});
+
+app.post('/login', async (req, res, next) => {
+  const userName = req.body.UserName;
+  const password = req.body.Password;
+
+  const user = await UserModel.findOne({Name: userName}).catch(err => {
+    console.log(err);
+    res.status(500).json({Message: err});
+    throw err;
+  });
+  if (!user) {
+    res.status(400).json({Message: 'Error: Login failed'});
+    next();
+  }
+
+  if (user.Password === password) {
+    const token = getToken(userName);
+    res.status(200).json({Message: 'Login success', Token: token});
+  } else {
+    res.status(400).json({Message :'Error: Login failed'});
   }
 });
 
