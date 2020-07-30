@@ -59,7 +59,7 @@ const postContent = async (req, res, next) => {
     throw err;
   });
    
-  const user = await UserModel.findOne({name: decoded.user}).catch(err => {
+  const user = await UserModel.findOne({Name: decoded.user}).catch(err => {
     console.log(err);
     res.status(500).json({Message: err});
     throw err;
