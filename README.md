@@ -59,6 +59,10 @@ Example
 
 ### Login
 
+```
+/login
+```
+
 Request
 
 | Name | Type |
@@ -88,6 +92,10 @@ Example
 
 ### Post content
 
+```
+/post
+```
+
 Request
 
 
@@ -116,6 +124,10 @@ Example
 ```
 
 ### Get contents
+
+```
+/get
+```
 
 Responce
 
