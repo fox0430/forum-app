@@ -23,12 +23,18 @@ beforeAll(async () => {
 })
 
 describe('GET /get', () => {
-  it('return get', (done) => {
+  it('return get', async (done) => {
+    // Create test data
+    const countContribution = await ContributionModel.count({});
+    if (countContribution == 0) {
+      await ContributionModel.create({UserID: 0, Message: 'test'});
+    }
+
     request(app)
       .get("/get")
       .then(res => {
         expect(res.statusCode).toBe(200);
-        assert(res.body.value === 'get');
+        assert(res.body.Contents.length > 0);
         done();
       });
   });
@@ -40,8 +46,10 @@ describe('POST /post', () => {
 
     request(app)
       .post('/post')
+      // Set tokne in headr
       .set({authorization: 'Bearer ' + token, Accept: 'application/json'})
-      .send({message: 'test'})
+      // Set content
+      .send({Message: 'test'})
       .then(res => {
         expect(res.statusCode).toBe(200);
         done();

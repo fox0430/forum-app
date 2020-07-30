@@ -41,8 +41,22 @@ const verifyToken = (token) => (
   })
 );
 
-app.get('/get', (req, res) => {
-  res.status(200).json({value: 'get'});
+app.get('/get', async (req, res) => {
+  const contributions = await ContributionModel.find({}).lean().catch(err => {
+    res.status(500).json({Message: err});
+    throw err;
+  });
+
+  const contents = [];
+  for (let i=0; i<contributions.length; i++) {
+    contents.push({
+      UserID: contributions[i]._id.toString(),
+      Message: contributions[i].Message,
+      Timestamp: contributions[i].Timestamp
+    });
+  }
+
+  res.status(200).json({Contents: JSON.stringify(contents)});
 });
 
 app.post('/post', async (req, res, next) => {
@@ -69,23 +83,22 @@ app.post('/post', async (req, res, next) => {
 
   if (user) {
     const result = await ContributionModel.create({
-      userID: user._id,
-      message: req.body.message,
+      UserID: user._id,
+      Message: req.body.message,
     }).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
       throw err;
     });
 
-    res.status(200).json({});
+    res.status(200).json({Message: 'Success'});
   } else {
-    res.status(400).json({});
+    res.status(400).json({Message: 'Post failed'});
   }
 });
 
 app.post('/create', async (req, res, next) => {
-  const username = req.body.UserName;
-  const pass = req.body.Password;
+  const username = req.body.UserName; const pass = req.body.Password;
 
   if (!username || !pass) {
     res.status(400).json({Message: 'Error: Empty data'});
