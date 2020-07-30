@@ -84,7 +84,7 @@ app.post('/post', async (req, res, next) => {
   if (user) {
     const result = await ContributionModel.create({
       UserID: user._id,
-      Message: req.body.message,
+      Message: req.body.Message,
     }).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
@@ -93,12 +93,13 @@ app.post('/post', async (req, res, next) => {
 
     res.status(200).json({Message: 'Success'});
   } else {
-    res.status(400).json({Message: 'Post failed'});
+    res.status(400).json({Message: 'Error Post failed'});
   }
 });
 
 app.post('/create', async (req, res, next) => {
-  const username = req.body.UserName; const pass = req.body.Password;
+  const username = req.body.UserName;
+  const pass = req.body.Password;
 
   if (!username || !pass) {
     res.status(400).json({Message: 'Error: Empty data'});
