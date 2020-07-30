@@ -23,7 +23,7 @@ beforeAll(async () => {
 })
 
 describe('GET /get', () => {
-  it('return get', async (done) => {
+  it('return contents', async (done) => {
     // Create test data
     const countContribution = await ContributionModel.count({});
     if (countContribution == 0) {
