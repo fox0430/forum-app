@@ -1,26 +1,10 @@
-const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
-const mongoDB = 'mongodb://127.0.0.1/forum';
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-// Get Mongoose to use the global promise library
-mongoose.Promise = global.Promise;
-//Get the default connection
-const db = mongoose.connection;
-
-//Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+const {UserModel, ContributionModel} = require('./mongo_schema');
 
 // secret key for token
 const SECRET_KEY = 'secretkey';
-
-const {UserModel, ContributionModel} = require('./mongo_schema');
-
-const app = express();
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
 
 const getToken = (user) => {
   const payload = {user: user};
@@ -41,7 +25,7 @@ const verifyToken = (token) => (
   })
 );
 
-app.get('/get', async (req, res) => {
+const getContents = async (req, res) => {
   const contributions = await ContributionModel.find({}).lean().catch(err => {
     res.status(500).json({Message: err});
     throw err;
@@ -57,9 +41,9 @@ app.get('/get', async (req, res) => {
   }
 
   res.status(200).json({Contents: JSON.stringify(contents)});
-});
+}
 
-app.post('/post', async (req, res, next) => {
+const postContent = async (req, res, next) => {
   let token = '';
   if (req.headers.authorization &&
     req.headers.authorization.split(' ')[0] === 'Bearer') {
@@ -95,9 +79,9 @@ app.post('/post', async (req, res, next) => {
   } else {
     res.status(400).json({Message: 'Error Post failed'});
   }
-});
+}
 
-app.post('/create', async (req, res, next) => {
+const createUser = async (req, res, next) => {
   const username = req.body.UserName;
   const pass = req.body.Password;
 
@@ -127,9 +111,9 @@ app.post('/create', async (req, res, next) => {
   } else {
     res.status(400).json({});
   }
-});
+}
 
-app.post('/login', async (req, res, next) => {
+const login = async(req, res, next) => {
   const userName = req.body.UserName;
   const password = req.body.Password;
 
@@ -149,6 +133,10 @@ app.post('/login', async (req, res, next) => {
   } else {
     res.status(400).json({Message :'Error: Login failed'});
   }
-});
 
-module.exports = app;
+}
+
+module.exports.getContents = getContents;
+module.exports.postContent = postContent;
+module.exports.createUser = createUser;
+module.exports.login = login;

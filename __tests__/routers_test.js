@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
 const assert = require('assert');
 
-const app = require('../app');
-const {UserModel, ContributionModel} = require('../mongo_schema');
+const app = require('../src/app');
+const {UserModel, ContributionModel} = require('../src/mongo_schema');
 
 const getToken = (user) => {
   const payload = {user: user};
