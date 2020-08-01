@@ -49,7 +49,7 @@ const postContent = async (req, res, next) => {
     req.headers.authorization.split(' ')[0] === 'Bearer') {
     token = req.headers.authorization.split(' ')[1];
   } else {
-    res.status(400).json(err);
+    res.status(400).json({Message: "Authorization Token Not Found"});
     next();
   }
 
