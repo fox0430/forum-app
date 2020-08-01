@@ -90,7 +90,7 @@ const createUser = async (req, res, next) => {
     next();
   }
 
-  const existsUser = await UserModel.count({name: username}).catch(err => {
+  const existsUser = await UserModel.count({Name: username}).catch(err => {
     console.log(err);
     res.status(500).json({Message: err});
     throw err;
@@ -98,7 +98,7 @@ const createUser = async (req, res, next) => {
 
   let newUser = {};
   if (!existsUser) {
-    newUser = await UserModel.create({name: username, Password: pass}).catch(err => {
+    newUser = await UserModel.create({Name: username, Password: pass}).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
       throw err;
