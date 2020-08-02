@@ -34,13 +34,13 @@ const getContents = async (req, res) => {
   const contents = [];
   for (let i=0; i<contributions.length; i++) {
     contents.push({
-      UserID: contributions[i]._id.toString(),
+      UserID: contributions[i].UserID,
       Message: contributions[i].Message,
       Timestamp: contributions[i].Timestamp
     });
   }
 
-  res.status(200).json({Contents: JSON.stringify(contents)});
+  res.status(200).json({Contents: contents});
 }
 
 const postContent = async (req, res, next) => {
@@ -96,7 +96,7 @@ const createUser = async (req, res, next) => {
     throw err;
   });
 
-  let newUser = {};
+  let newUser;
   if (!existsUser) {
     newUser = await UserModel.create({Name: username, Password: pass}).catch(err => {
       console.log(err);
@@ -106,7 +106,7 @@ const createUser = async (req, res, next) => {
   }
 
   if (newUser) {
-    const token = getToken(newUser.name);
+    const token = getToken(newUser.Name);
     res.status(200).json({Token: token});
   } else {
     res.status(400).json({});
