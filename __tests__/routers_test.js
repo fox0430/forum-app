@@ -27,12 +27,14 @@ describe('GET /get', () => {
     // Create test data
     const countContribution = await ContributionModel.count({});
     if (countContribution == 0) {
-      await ContributionModel.create({UserID: 0, Message: 'test'});
+      const id = mongoose.Types.ObjectId();
+      await ContributionModel.create({UserID: id, Message: 'test' , S3Url: 'https:example.com'});
     }
 
     request(app)
       .get("/get")
       .then(res => {
+        console.log(res.body);
         expect(res.statusCode).toBe(200);
         assert(res.body.Contents.length > 0);
         done();
@@ -49,7 +51,7 @@ describe('POST /post', () => {
       // Set tokne in headr
       .set({authorization: 'Bearer ' + token, Accept: 'application/json'})
       // Set content
-      .send({Message: 'test'})
+      .send({Message: 'test', S3Url: 'https://example.com'})
       .then(res => {
         expect(res.statusCode).toBe(200);
         done();
