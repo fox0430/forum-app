@@ -33,11 +33,21 @@ const getContents = async (req, res) => {
 
   const contents = [];
   for (let i=0; i<contributions.length; i++) {
-    contents.push({
-      UserID: contributions[i].UserID,
-      Message: contributions[i].Message,
-      Timestamp: contributions[i].Timestamp
-    });
+    const id = contributions[i].UserID;
+
+    if (id !== 0) {
+      const user = await UserModel.findOne({_id: id}).catch(err => {
+        res.status(500).json({Message: err});
+        throw err;
+      });
+
+      contents.push({
+        UserID: id,
+        UserName: user.Name,
+        Message: contributions[i].Message,
+        Timestamp: contributions[i].Timestamp
+      });
+    }
   }
 
   res.status(200).json({Contents: contents});
