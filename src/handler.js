@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const express = require('express');
 const jwt = require('jsonwebtoken');
 
 const {UserModel, ContributionModel} = require('./mongo_schema');
@@ -43,14 +44,14 @@ const getContents = async (req, res) => {
   res.status(200).json({Contents: JSON.stringify(contents)});
 }
 
-const postContent = async (req, res, next) => {
+const postContent = async (req, res) => {
   let token = '';
   if (req.headers.authorization &&
     req.headers.authorization.split(' ')[0] === 'Bearer') {
     token = req.headers.authorization.split(' ')[1];
   } else {
     res.status(400).json(err);
-    next();
+    return;
   }
 
   const decoded = await verifyToken(token).catch(err => {
@@ -81,13 +82,13 @@ const postContent = async (req, res, next) => {
   }
 }
 
-const createUser = async (req, res, next) => {
+const createUser = async (req, res) => {
   const username = req.body.UserName;
   const pass = req.body.Password;
 
   if (!username || !pass) {
     res.status(400).json({Message: 'Error: Empty data'});
-    next();
+    return;
   }
 
   const existsUser = await UserModel.count({name: username}).catch(err => {
@@ -113,7 +114,7 @@ const createUser = async (req, res, next) => {
   }
 }
 
-const login = async(req, res, next) => {
+const login = async(req, res) => {
   const userName = req.body.UserName;
   const password = req.body.Password;
 
@@ -124,7 +125,7 @@ const login = async(req, res, next) => {
   });
   if (!user) {
     res.status(400).json({Message: 'Error: Login failed'});
-    next();
+    return;
   }
 
   if (user.Password === password) {
