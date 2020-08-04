@@ -140,8 +140,6 @@ const login = async(req, res) => {
     return;
   }
 
-  console.log(bcrypt.compareSync(password, user.Password));
-
   if (bcrypt.compareSync(password, user.Password)) {
     const token = getToken(userName);
     res.status(200).json({Message: 'Login success', Token: token});

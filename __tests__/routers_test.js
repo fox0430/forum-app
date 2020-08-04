@@ -2,6 +2,7 @@ const request = require("supertest");
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
 const assert = require('assert');
+const bcrypt = require('bcrypt');
 
 const app = require('../src/app');
 const {UserModel, ContributionModel} = require('../src/mongo_schema');
@@ -19,17 +20,19 @@ beforeAll(async () => {
   const url = `mongodb://127.0.0.1/forum`;
   await mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
 
-  await UserModel.create({Name: 'testUser', Password: 'test'});
 })
 
 describe('GET /get', () => {
   it('return contents', async (done) => {
     // Create test data
     const countContribution = await ContributionModel.count({});
-    if (countContribution == 0) {
-      const id = mongoose.Types.ObjectId();
-      await ContributionModel.create({UserID: id, Message: 'test' , S3Url: 'https:example.com'});
-    }
+    const id = mongoose.Types.ObjectId();
+
+    const pass = 'test';
+    const hashedPassword = bcrypt.hashSync(pass, 10);
+    const result = await UserModel.create({Name: 'testUser', Password: hashedPassword});
+
+    await ContributionModel.create({UserID: result._id, Message: 'test' , S3Url: 'https:example.com'});
 
     request(app)
       .get("/get")
@@ -80,11 +83,13 @@ describe('POST /login ', () => {
     // Generate uniq user name
     const user = mongoose.Types.ObjectId();
 
-    await UserModel.create({Name: user, Password: 'pass'});
+    const pass = 'test';
+    const hashedPassword = bcrypt.hashSync(pass, 10);
+    await UserModel.create({Name: user, Password: hashedPassword});
 
     request(app)
       .post('/login')
-      .send({UserName: user, Password: 'pass'})
+      .send({UserName: user, Password: pass})
       .set('Accept', 'application/json')
       .then(res => {
         expect(res.statusCode).toBe(200);
