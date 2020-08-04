@@ -35,19 +35,18 @@ const getContents = async (req, res) => {
   for (let i=0; i<contributions.length; i++) {
     const id = contributions[i].UserID;
 
-    if (id !== 0) {
-      const user = await UserModel.findOne({_id: id}).catch(err => {
-        res.status(500).json({Message: err});
-        throw err;
-      });
+    const user = await UserModel.findOne({_id: id}).catch(err => {
+      res.status(500).json({Message: err});
+      throw err;
+    });
 
-      contents.push({
-        UserID: id,
-        UserName: user.Name,
-        Message: contributions[i].Message,
-        Timestamp: contributions[i].Timestamp
-      });
-    }
+    contents.push({
+      UserID: id,
+      UserName: user.Name,
+      Message: contributions[i].Message,
+      S3Url: contributions[i].S3Url,
+      Timestamp: contributions[i].Timestamp
+    });
   }
 
   res.status(200).json({Contents: contents});
@@ -79,6 +78,7 @@ const postContent = async (req, res) => {
     const result = await ContributionModel.create({
       UserID: user._id,
       Message: req.body.Message,
+      S3Url: req.body.S3Url,
     }).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
