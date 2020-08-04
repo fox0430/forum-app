@@ -14,7 +14,7 @@ npn run start
 
 ## Docker
 ```
-docker run -d -it --name forum-app fox0430/fourm-app
+docker run -d -it --name forum-app fox0430/forum-app
 ```
 
 ## Test

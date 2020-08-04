@@ -11,13 +11,20 @@ const db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const Handler = require('./handler.js'); 
+const Handler = require('./handler.js');
 const {UserModel, ContributionModel} = require('./mongo_schema');
 
 const app = express();
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
+// Allow CORS
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
 
 app.get('/get', async (req, res) => {
   Handler.getContents(req, res);

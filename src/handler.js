@@ -35,13 +35,13 @@ const getContents = async (req, res) => {
   const contents = [];
   for (let i=0; i<contributions.length; i++) {
     contents.push({
-      UserID: contributions[i]._id.toString(),
+      UserID: contributions[i].UserID,
       Message: contributions[i].Message,
       Timestamp: contributions[i].Timestamp
     });
   }
 
-  res.status(200).json({Contents: JSON.stringify(contents)});
+  res.status(200).json({Contents: contents});
 }
 
 const postContent = async (req, res) => {
@@ -50,7 +50,7 @@ const postContent = async (req, res) => {
     req.headers.authorization.split(' ')[0] === 'Bearer') {
     token = req.headers.authorization.split(' ')[1];
   } else {
-    res.status(400).json(err);
+    res.status(400).json({Message: "Authorization Token Not Found"});
     return;
   }
 
@@ -91,15 +91,15 @@ const createUser = async (req, res) => {
     return;
   }
 
-  const existsUser = await UserModel.count({name: username}).catch(err => {
+  const existsUser = await UserModel.count({Name: username}).catch(err => {
     console.log(err);
     res.status(500).json({Message: err});
     throw err;
   });
 
-  let newUser = {};
+  let newUser;
   if (!existsUser) {
-    newUser = await UserModel.create({name: username, Password: pass}).catch(err => {
+    newUser = await UserModel.create({Name: username, Password: pass}).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
       throw err;
@@ -107,7 +107,7 @@ const createUser = async (req, res) => {
   }
 
   if (newUser) {
-    const token = getToken(newUser.name);
+    const token = getToken(newUser.Name);
     res.status(200).json({Token: token});
   } else {
     res.status(400).json({});
