@@ -34,7 +34,6 @@ describe('GET /get', () => {
     request(app)
       .get("/get")
       .then(res => {
-        console.log(res.body);
         expect(res.statusCode).toBe(200);
         assert(res.body.Contents.length > 0);
         done();
