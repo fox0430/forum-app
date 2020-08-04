@@ -52,8 +52,8 @@ Responce
 Example
 ```
 {
-    Message: 'Login success',
-    Token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWYyMmZkZDVlNThlNmUyYWZiZDc0MTk1IiwiaWF0IjoxNTk2MTI4NzI1LCJleHAiOjE1OTYyMTUxMjV9E4DcvxP9u4Vrnjzkw83jcoWVqFQ6YpC71snjauRn18Y'
+    "Message": "Login success",
+    "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWYyMmZkZDVlNThlNmUyYWZiZDc0MTk1IiwiaWF0IjoxNTk2MTI4NzI1LCJleHAiOjE1OTYyMTUxMjV9E4DcvxP9u4Vrnjzkw83jcoWVqFQ6YpC71snjauRn18Y"
 }
 ```
 
@@ -104,11 +104,12 @@ Request
 | Name | Type |
 ---|---|
 | Message | String |
+| S3Url | String |
 
 Example
 
 ```
-{Message "test"}
+{Message "test", "S3Url": "https://example.com"}
 ```
 
 Responce
@@ -142,9 +143,11 @@ Constent
 | UserID | String |
 | UserName | String |
 | Message | String |
+| S3Url | String |
 | Timestamp | String |
 
 Responce example
 ```
-[{"UserID":"5f22fc430dec2427d9904474", "UserName": "testuser, "Message":"test","Timestamp":"2020-07-30T16:58:43.180Z"}]
+
+[{"UserID":"5f22fc430dec2427d9904474", "UserName": "testuser, "Message":"test", "S3Url": "https://exmaple.com", "Timestamp":"2020-07-30T16:58:43.180Z"}]
 ```
