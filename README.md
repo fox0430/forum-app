@@ -147,7 +147,8 @@ Constent
 | Timestamp | String |
 
 Responce example
-```
 
-[{"UserID":"5f22fc430dec2427d9904474", "UserName": "testuser, "Message":"test", "S3Url": "https://exmaple.com", "Timestamp":"2020-07-30T16:58:43.180Z"}]
+```
+[{"UserID":"5f22fc430dec2427d9904474", "UserName": "testuser", "Message":"test", "S3Url": "https://exmaple.com", "Timestamp":"2020-07-30T16:58:43.180Z"}]
+
 ```
