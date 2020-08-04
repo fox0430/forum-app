@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const moment = require('moment-timezone');
 
 const {UserModel, ContributionModel} = require('./mongo_schema');
 
@@ -76,10 +77,13 @@ const postContent = async (req, res) => {
   });
 
   if (user) {
+    const date = moment().tz('Asia/Tokyo').format();
+
     const result = await ContributionModel.create({
       UserID: user._id,
       Message: req.body.Message,
       S3Url: req.body.S3Url,
+      Timestamp: date
     }).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
