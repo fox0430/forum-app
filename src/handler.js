@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const {UserModel, ContributionModel} = require('./mongo_schema');
 
@@ -108,7 +109,9 @@ const createUser = async (req, res) => {
 
   let newUser;
   if (!existsUser) {
-    newUser = await UserModel.create({Name: username, Password: pass}).catch(err => {
+    const hashedPassword = bcrypt.hashSync(pass, 10);
+
+    newUser = await UserModel.create({Name: username, Password: hashedPassword}).catch(err => {
       console.log(err);
       res.status(500).json({Message: err});
       throw err;
@@ -137,7 +140,7 @@ const login = async(req, res) => {
     return;
   }
 
-  if (user.Password === password) {
+  if (bcrypt.compareSync(password, user.Password)) {
     const token = getToken(userName);
     res.status(200).json({Message: 'Login success', Token: token});
   } else {
