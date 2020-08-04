@@ -22,8 +22,7 @@ const ContributionModelSchema = new Schema({
     type: String
   },
   Timestamp: {
-    type: Date,
-    default: new Date
+    type: String,
   }
 });
 
