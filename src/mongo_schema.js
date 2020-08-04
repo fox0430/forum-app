@@ -18,6 +18,9 @@ const ContributionModelSchema = new Schema({
   Message:{
     type: String 
   },
+  S3Url: {
+    type: String
+  },
   Timestamp: {
     type: Date,
     default: new Date
