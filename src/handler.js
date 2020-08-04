@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const express = require('express');
 const jwt = require('jsonwebtoken');
 
 const {UserModel, ContributionModel} = require('./mongo_schema');
